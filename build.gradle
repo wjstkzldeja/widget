@@ -1,0 +1,173 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = "1.4.10"
+    ext.v_navigation = '2.3.1'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.2"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+
+        //https://developer.android.com/jetpack/androidx/releases/navigation
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$v_navigation"
+        //realm
+        classpath "io.realm:realm-gradle-plugin:7.0.8"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    //app
+    v_appCompat = '1.2.0'
+    v_cardView = '1.0.0'
+    v_material = '1.2.1'
+    v_recyclerView = '1.2.0-alpha06'
+    v_androidXAnnotations = '1.0.1'
+    v_constraintlayout = '2.0.4'
+    v_support_v4 = '1.0.0'
+    v_exifinterface = '1.2.0'
+    v_databinding_adapter = '4.0.2'
+    v_viewpager2 = '1.0.0-rc01'
+
+    //aac
+    v_room = '2.2.5'
+    v_archLifecycle = '2.2.0'
+
+    //junit test
+    v_junit = '4.12'
+    v_junit_ext = '1.1.2'
+    v_runner = '1.3.0'
+    v_test_core = '1.3.0'
+    v_robolectric = '4.2.1'
+    v_mockito = '2.8.9'
+    v_mockito_kotlin = '2.1.0'
+    v_mockito_inline = '2.21.0'
+    v_hamcres = '1.3'
+    v_espresso = '3.3.0'
+    v_truth = '0.44'
+
+    //kotlin
+    v_coreKtx = '1.3.2'
+    v_fragmentKtx = '1.2.5'
+
+    //rx
+    v_rx2_rxkotlin = '2.4.0-beta.1'
+    v_rx2_rxAndroid = '2.1.1'
+    v_rx2_rxjava = '2.2.10'
+    v_rx2_rxBinding = '2.2.0'
+
+    //network
+    v_retrofit2 = '2.6.0'
+    v_retrofit2_convertGson = v_retrofit2
+    v_retrofit2_adapterRxjav2 = v_retrofit2
+    v_retrofit2_scalarConvertor = v_retrofit2
+    v_okhttp3 = '4.8.1'
+    v_okhttp3_loggingInterceptor = v_okhttp3
+    v_gson = '2.8.6'
+
+    //lib
+    v_glide = '4.11.0'
+    v_tedPermisson_rx2 = '2.2.2'
+    v_stetho = "1.5.1"
+    v_guava_android = "28.2-android"
+    v_lottie = "3.4.1"
+    v_chipCloud = "2.2.1"
+
+    info = getInfoProperties()
+
+    /**
+     * basic information of android
+     *
+     * do not remove this section
+     **/
+    app_id = info.applicationId
+    v_compile_sdk = info.v_compile_sdk as int
+    v_build_tool = info.v_build_tool
+    v_min_sdk = info.v_min_sdk as int
+    v_target_sdk = info.v_target_sdk as int
+    vCode = info.vCode as int
+    apk_header = info.apkHeader
+    v_name = generateVersionName(info.major as int, info.minor as int, info.patch as int)
+    apk_name = generateApkName(info.major as int, info.minor as int, info.patch as int, vCode)
+
+    /**
+     * server api information
+     *
+     * if need, uncomment this section
+     **/
+    protocol = info.protocol
+    base_url = info.baseUrl
+    port = info.port
+
+    /**
+     * aws bucket information
+     *
+     * if need, uncomment this section
+     **/
+    aws_access_key = info.aws_access_key
+    aws_secret_key = info.aws_secret_key
+    aws_bucket_name = info.aws_bucket_name
+}
+
+def getInfoProperties() {
+    def props = new Properties()
+
+    def file = file("info/info.properties")
+    if (!file.exists()) {
+        return props
+    }
+
+    file.withInputStream { stream -> props.load(stream) }
+
+    props.put(
+            "versionName",
+            generateVersionName(props.major as int, props.minor as int, props.patch as int)
+    )
+    props.put(
+            "apkName",
+            generateApkName(props.major as int, props.minor as int, props.patch as int, props.vCode as int)
+    )
+
+    return props
+}
+
+static String generateVersionName(int major, int minor, int patch) {
+    return String.format("v%d.%d.%d", major, minor, patch)
+}
+
+static String generateApkName(int major, int minor, int patch, int vCode) {
+    return String.format("v%d.%d.%d_%d_%s", major, minor, patch, vCode, generateVersionDate())
+}
+
+static String generateVersionDate() {
+    def cal = GregorianCalendar.getInstance()
+    int korOffset = TimeZone.getTimeZone("Asia/Seoul").rawOffset
+    int currentOffset = cal.timeZone.rawOffset
+
+    cal.add(Calendar.MILLISECOND, korOffset - currentOffset)
+
+    return String.format("%02d%02d%02d.%02d%01d",
+            cal.get(Calendar.YEAR) % 2000,
+            cal.get(Calendar.MONTH) + 1,
+            cal.get(Calendar.DATE),
+            cal.get(Calendar.HOUR_OF_DAY),
+            (int) (cal.get(Calendar.MINUTE) / 10)
+    )
+}

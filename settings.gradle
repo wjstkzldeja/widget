@@ -1,0 +1,2 @@
+include ':app', ':data', ':domain', ':entity', ':common'
+rootProject.name='widget'

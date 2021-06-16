@@ -1,0 +1,93 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
+
+android {
+    compileSdkVersion v_compile_sdk
+    buildToolsVersion v_build_tool
+
+
+    defaultConfig {
+        minSdkVersion v_min_sdk
+        targetSdkVersion v_target_sdk
+        versionCode vCode
+        versionName v_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+
+        /**
+         * remote server api information
+         **/
+        resValue "string", "protocol", protocol
+        resValue "string", "base_url", base_url
+        resValue "string", "port", port
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main.res.srcDirs = files(["../info/data/res"])
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //unit test
+    androidTestImplementation "androidx.test.ext:junit:$v_junit_ext" //assertions
+    androidTestImplementation "androidx.test:runner:$v_runner" //android junit runner
+    androidTestImplementation "androidx.test.espresso:espresso-core:$v_espresso"
+
+    testImplementation "junit:junit:$v_junit"
+    testImplementation "androidx.test:core:$v_test_core" //core lib
+    testImplementation "org.robolectric:robolectric:$v_robolectric"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$v_mockito_kotlin"
+    testImplementation "org.mockito:mockito-inline:$v_mockito_inline"
+
+    //app
+    implementation "androidx.appcompat:appcompat:$v_appCompat"
+//
+//    //aac
+//    implementation "androidx.room:room-runtime:$v_room"
+//    kapt "androidx.room:room-compiler:$v_room"
+//    implementation "androidx.room:room-ktx:$v_room"
+
+    //rx
+    implementation "io.reactivex.rxjava2:rxkotlin:$v_rx2_rxkotlin"
+    implementation "io.reactivex.rxjava2:rxjava:$v_rx2_rxjava"
+    implementation "io.reactivex.rxjava2:rxandroid:$v_rx2_rxAndroid"
+
+    //network
+    implementation "com.squareup.retrofit2:retrofit:$v_retrofit2"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$v_retrofit2_adapterRxjav2"
+    implementation "com.squareup.retrofit2:converter-gson:$v_retrofit2_convertGson"
+    implementation "com.squareup.okhttp3:okhttp:$v_okhttp3"
+    implementation "com.squareup.okhttp3:logging-interceptor:$v_okhttp3_loggingInterceptor"
+    implementation "com.google.code.gson:gson:$v_gson"
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    //ext
+    implementation project(path: ':domain')
+    implementation project(path: ':entity')
+    implementation project(path: ':common')
+
+}

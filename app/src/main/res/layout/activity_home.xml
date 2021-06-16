@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <data>
+
+    <variable
+      name="viewModel"
+      type="com.osl.swrnd.aos.views.container.home.HomeViewModel" />
+  </data>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.fragment.app.FragmentContainerView
+      android:id="@+id/nav_host"
+      android:name="androidx.navigation.fragment.NavHostFragment"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:defaultNavHost="true"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:navGraph="@navigation/nav_home" />
+
+    <View
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@android:color/black"
+      android:clickable="true"
+      android:focusable="true"
+      android:visibility="gone"
+      android:alpha="0"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      visibility="@{viewModel.loadingVisibility}"
+      maxAlpha="@{viewModel.loadingMaxAlpha}"
+      alphaAnimator="@{viewModel.loadingBgAnimator}" />
+
+    <com.airbnb.lottie.LottieAnimationView
+      android:layout_width="150dp"
+      android:layout_height="150dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:lottie_rawRes="@raw/loading"
+      app:lottie_autoPlay="true"
+      app:lottie_repeatMode="restart"
+      app:lottie_loop="true"
+      visibility="@{viewModel.loadingVisibility}" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

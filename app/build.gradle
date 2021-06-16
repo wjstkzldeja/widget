@@ -1,0 +1,141 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion v_compile_sdk
+    buildToolsVersion v_build_tool
+
+    defaultConfig {
+        applicationId app_id
+        minSdkVersion v_min_sdk
+        targetSdkVersion v_target_sdk
+        versionCode vCode
+        versionName v_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        /**
+         * aws bucket information
+         *
+         * if need, uncomment this section
+         **/
+        buildConfigField "String", "AWS_ACCESS_KEY", "\"$aws_access_key\""
+        buildConfigField "String", "AWS_SECRET_KEY", "\"$aws_secret_key\""
+        buildConfigField "String", "AWS_BUCKET_NAME", "\"$aws_bucket_name\""
+    }
+
+    signingConfigs {
+        release {
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                storeFile = file(RELEASE_STORE_FILE)
+                storePassword = RELEASE_STORE_PASSWORD
+                keyAlias = RELEASE_KEY_ALIAS
+                keyPassword = RELEASE_KEY_PASSWORD
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = outputFileName.replace("app", "${apk_header}_${apk_name}")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        dataBinding = true
+    }
+
+//    externalNativeBuild {
+//        ndkBuild {
+//            path 'src/main/jni/Android.mk'
+//        }
+//    }
+
+//    aaptOptions {
+//        noCompress "tflite"
+//    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //unit test
+    androidTestImplementation "androidx.test.ext:junit:$v_junit_ext" //assertions
+    androidTestImplementation "androidx.test:runner:$v_runner" //android junit runner
+    androidTestImplementation "androidx.test.espresso:espresso-core:$v_espresso"
+
+    testImplementation "junit:junit:$v_junit"
+    testImplementation "androidx.test:core:$v_test_core" //core lib
+    testImplementation "org.robolectric:robolectric:$v_robolectric"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$v_mockito_kotlin"
+    testImplementation "org.mockito:mockito-inline:$v_mockito_inline"
+
+    //app
+    implementation "androidx.appcompat:appcompat:$v_appCompat"
+    implementation "androidx.cardview:cardview:$v_cardView"
+    implementation "com.google.android.material:material:$v_material"
+    implementation "androidx.recyclerview:recyclerview:$v_recyclerView"
+    implementation "androidx.constraintlayout:constraintlayout:$v_constraintlayout"
+    implementation "androidx.annotation:annotation:$v_androidXAnnotations"
+    implementation "androidx.legacy:legacy-support-v4:$v_support_v4"
+
+    //aac
+    implementation "androidx.lifecycle:lifecycle-extensions:$v_archLifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$v_archLifecycle"
+    implementation "androidx.navigation:navigation-fragment-ktx:$v_navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$v_navigation"
+    implementation "androidx.viewpager2:viewpager2:$v_viewpager2"
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "androidx.fragment:fragment-ktx:$v_fragmentKtx"
+    implementation "androidx.core:core-ktx:$v_coreKtx"
+
+    //rx
+    implementation "io.reactivex.rxjava2:rxkotlin:$v_rx2_rxkotlin"
+    implementation "io.reactivex.rxjava2:rxandroid:$v_rx2_rxAndroid"
+    implementation "io.reactivex.rxjava2:rxjava:$v_rx2_rxjava"
+    implementation "com.jakewharton.rxbinding2:rxbinding:$v_rx2_rxBinding"
+
+    //lib
+    implementation("com.github.bumptech.glide:glide:$v_glide") {
+        exclude group: "com.android.support"
+    }
+    implementation "gun0912.ted:tedpermission-rx2:$v_tedPermisson_rx2"
+    implementation "com.airbnb.android:lottie:$v_lottie"
+    implementation "com.facebook.stetho:stetho:$v_stetho"
+
+    /*aws sdk*/
+    implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.228')
+    implementation 'com.amazonaws:aws-android-sdk-cognito:2.13.5'
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.16.11'
+    implementation 'com.amazonaws:aws-android-sdk-mobile-client:2.13.5'
+
+    //ext
+    implementation project(path: ':data')
+    implementation project(path: ':domain')
+    implementation project(path: ':entity')
+    implementation project(path: ':common')
+}

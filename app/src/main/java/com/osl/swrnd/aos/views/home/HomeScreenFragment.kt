@@ -13,7 +13,7 @@ class HomeScreenFragment : BaseFragment<FragmentHomescreenBinding, HomeScreenVie
 
 
   override fun initViews(savedInstanceState: Bundle?) {
-    viewModel.init()
+//    viewModel.init()
   }
 
   override fun addObservers() {

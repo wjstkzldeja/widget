@@ -16,9 +16,11 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>() {
     override val viewModel: HomeViewModel by viewModels { (application as App).viewModelFactory }
 
     override fun initViews(savedInstanceState: Bundle?) {
-        val appWidgetManager = AppWidgetManager.getInstance(this)
         ui.viewDataBinding.tvTest.setOnClickListener {
             send()
+        }
+        ui.viewDataBinding.tvTest2.setOnClickListener {
+            send2()
         }
     }
 
@@ -27,7 +29,14 @@ class HomeActivity : BaseActivity<ActivityHomeBinding, HomeViewModel>() {
 
     private fun send() {
         val intent = Intent(this@HomeActivity, AppWidget::class.java)
-        intent.putExtra("test","value")
+        intent.putExtra("test", "value_1")
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        this@HomeActivity.sendBroadcast(intent)
+    }
+
+    private fun send2() {
+        val intent = Intent(this@HomeActivity, AppWidget::class.java)
+        intent.putExtra("test", "value_2")
         intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
         this@HomeActivity.sendBroadcast(intent)
     }

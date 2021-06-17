@@ -13,15 +13,12 @@ import com.osl.swrnd.common.d
  */
 class AppWidget : AppWidgetProvider() {
 
-    private var testValue: String? = "null"
+    private var testValue: String? = "Example"
 
     override fun onReceive(context: Context?, intent: Intent?) {
         super.onReceive(context, intent)
-        testValue = intent?.getStringExtra("test") ?: "null"
+        testValue = intent?.getStringExtra("test") ?: "Example"
         d({ "logTest : onReceive : ${testValue}" })
-        if (testValue == "null" || testValue.isNullOrEmpty()) {
-            return
-        }
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val widgetName = ComponentName(context!!.packageName, AppWidget::class.java.name)
         val widgetIds = appWidgetManager.getAppWidgetIds((widgetName))
@@ -45,14 +42,10 @@ class AppWidget : AppWidgetProvider() {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
 
-        if (testValue == "null" || testValue.isNullOrEmpty()) {
-            return
-        }
-        /*text change*/
+        /** update code*/
         val views = RemoteViews(context.packageName, R.layout.app_widget)
         views.setTextViewText(R.id.appwidget_text, testValue)
         appWidgetManager.updateAppWidget(appWidgetIds, views)
-
     }
 
     /**
@@ -92,6 +85,7 @@ internal fun updateAppWidget(
     appWidgetId: Int
 ) {
     d({ "logTest : updateAppWidget " })
+/*
     val widgetText = context.getString(R.string.appwidget_text)
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.app_widget)
@@ -99,4 +93,5 @@ internal fun updateAppWidget(
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
+    */
 }
